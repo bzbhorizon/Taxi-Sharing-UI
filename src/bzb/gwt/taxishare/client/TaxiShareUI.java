@@ -5,10 +5,12 @@ import java.util.Date;
 import org.adamtacy.client.ui.effects.events.EffectCompletedEvent;
 import org.adamtacy.client.ui.effects.events.EffectCompletedHandler;
 import org.adamtacy.client.ui.effects.impl.Fade;
+import org.adamtacy.client.ui.effects.impl.Highlight;
 import org.adamtacy.client.ui.effects.impl.NShow;
 import org.adamtacy.client.ui.effects.impl.SlideDown;
-import org.adamtacy.client.ui.effects.impl.SlideUp;
-import org.adamtacy.client.ui.effects.impl.WipeDown;
+import org.adamtacy.client.ui.effects.impl.SlideRight;
+import org.adamtacy.client.ui.effects.transitionsphysics.EaseInTransitionPhysics;
+import org.adamtacy.client.ui.effects.transitionsphysics.EaseOutTransitionPhysics;
 import org.adamtacy.client.ui.effects.transitionsphysics.ElasticTransitionPhysics;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -40,42 +42,55 @@ public class TaxiShareUI implements EntryPoint {
 	private static int pageNum = 0;
 	private static int totalPages = 3;
 	
-	private static final int PAGE_TIMEOUT = 20000;
-	private static final int TIMEOUT_INDICATOR = 4000;
+	private static final int PAGE_TIMEOUT = 5000;
+	private static final int TIMEOUT_INDICATOR = 1000;
 	private static final int CLOCK_UPDATE = 1000;
 	
-	private static SlideDown sd = new SlideDown();
 	private static Fade f = new Fade();
 	private static NShow ns = new NShow();
 	private static Fade fPage = new Fade();
+	private static SlideDown sd = new SlideDown();
+	private static Highlight mf;
 	
 	public TaxiShareUI () {
-		sd.setTransitionType(new ElasticTransitionPhysics());
-		sd.addEffectElement(vPanel.getElement());
-		f.addEffectElement(vPanel.getElement());
-		ns.addEffectElement(vPanel.getElement());
+		sd.setTransitionType(new EaseOutTransitionPhysics());
+		mf = new Highlight(vPanel.getElement());
+		sd.setEffectElement(vPanel.getElement());
+		f.setEffectElement(vPanel.getElement());
+		ns.setEffectElement(vPanel.getElement());
 		ns.setDuration(1);
 		f.addEffectCompletedHandler(new EffectCompletedHandler(){
 			public void onEffectCompleted(EffectCompletedEvent evt){
-				Label l1 = new Label("asdf " + pageNum);
-				l1.setStyleName("taxiBox");
-				
-				Label l2 = new Label("asdf " + pageNum);
-				l2.setStyleName("taxiBox");
-				
-				Label l3 = new Label("asdf " + pageNum);
-				l3.setStyleName("taxiBox");
-				
 				vPanel.clear();
-				vPanel.add(l1);
-				vPanel.add(l2);
-				vPanel.add(l3);
+				
+				if (pageNum < totalPages - 1) {
+					TaxiPanel t1 = new TaxiPanel("asdf " + pageNum);
+					TaxiPanel t2 = new TaxiPanel("asdf " + pageNum);
+					TaxiPanel t3 = new TaxiPanel("asdf " + pageNum);
+					
+					vPanel.add(t1);
+					vPanel.add(t2);
+					vPanel.add(t3);
+					
+					sd.play();
+				} else {
+					MapPanel mp = new MapPanel();
+					vPanel.add(mp);
+					
+					mf.addEffectCompletedHandler(new EffectCompletedHandler() {
+						public void onEffectCompleted(EffectCompletedEvent event) {
+							
+						}
+					});
+					
+					mf.play();
+				}
 				
 				ns.play();
-				sd.play();
 			}
 		});
 		fPage.addEffectElement(pageLabel.getElement());
+		fPage.setDuration(PAGE_TIMEOUT / 1000);
 	}
 	
 	/**
@@ -209,8 +224,6 @@ public class TaxiShareUI implements EntryPoint {
 	
 	private static Timer countdownTimer = new Timer() {
 		public void run () {
-			//pageLabel.setStyleName("pageLabelAttention");
-			fPage.play(TIMEOUT_INDICATOR/1000);
 			f.play();
 		}
 	};
@@ -219,6 +232,7 @@ public class TaxiShareUI implements EntryPoint {
 		pageLabel.setText("Page " + (pageNum + 1) + "/" + totalPages);
 		pageLabel.setStyleName("pageLabel");
 		countdownTimer.schedule(PAGE_TIMEOUT - TIMEOUT_INDICATOR);
+		fPage.play();
 	}
 	
 	static final Label timeLabel = new Label();

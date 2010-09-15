@@ -1,9 +1,10 @@
 html {
 	overflow-x: hidden;
+	overflow-y: hidden;
 	}
 
 .background {
-	background: -webkit-gradient(linear, left top, right bottom, from(rgb(36,97,170)), to(rgb(66,127,200)));
+	background: -webkit-gradient(linear, left top, right bottom, from(rgb(20,81,153)), to(rgb(66,127,200)));
 }
 
 #titlePanel {
@@ -44,7 +45,7 @@ html {
 	}
 	
 #infoPanel {
-	background: -webkit-gradient(linear, left top, right bottom, from(rgb(232,232,232)), to(rgb(154,181,228)));
+	background: -webkit-gradient(linear, left top, right bottom, from(rgb(255,255,255)), to(rgb(154,181,228)));
 	width: 100%;
 	position: absolute;
 	bottom: 0;
@@ -68,7 +69,34 @@ html {
 	margin-top: 10px;	
 }
 
-.taxiBox {
-	margin: 20px;
-	background-color: white;
+.taxiBox, .taxiBoxLast, .taxiBoxFull, .taxiBoxLastFull {
+	margin: 5px;
+	padding: 20px;
+	color: yellow;
+}
+.taxiBox, .taxiBoxFull {
+	border-right: 3px solid rgb(0,50,100);
+	padding-right: 30px;
+	}
+.taxiBoxFull, .taxiBoxLastFull {
+	color: red;
+	}
+	
+#activePanel {
+	background-color: transparent;
+	width: 100%;
+	position: absolute;
+	padding: 20px;
+}
+
+.taxiPanel {
+	background: -webkit-gradient(linear,
+    left bottom,
+    left top,
+    color-stop(0.29, rgb(28,109,176)),
+    color-stop(0.65, rgb(56,142,212)));
+	margin-bottom: 20px;
+	border-top-left-radius: 15px;
+	border: 3px solid rgb(0,50,100);
+	-webkit-box-shadow: 5px 5px 3px rgba(0, 0, 0, .4);
 }
