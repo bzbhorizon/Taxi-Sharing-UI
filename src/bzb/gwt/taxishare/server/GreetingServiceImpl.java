@@ -12,14 +12,15 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 		GreetingService {
 	
 	public String greetServer(String input) {
-		String testStatus = new String(
-				"{\"TaxiStatus\" : [{" +
+		String testStatus = new String("{\"TaxiStatus\" : [");
+		for (int i = 0; i < 7; i++) {
+			testStatus += "{" +
 			"\"key\" : {" +
-			"\"requestID\" : 1" +
+			"\"requestID\" : " + i +
 			"}," +
 			"\"required\" : {" +
 			"\"ownerID\" : \"string\"," +
-			"\"destination\" : \"string\"," +
+			"\"destinationID\" : \"1\"," +
 			"\"requestTime\" : 1," +
 			"\"arrivalTime\" : 1," +
 			"\"status\" : \"string\"" +
@@ -30,8 +31,20 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 			"\"predictedCost\" : 1," +
 			"\"spaceLeft\" : \"number\"" +
 			"}" +
-			"}]}"
-		);
+			"},";
+		}
+		testStatus += "], \"Destination\" : [";
+		for (int i = 0; i < 30; i++) {
+			testStatus += "{" +
+			"\"key\" : {" +
+			"\"destinationID\" : " + i +
+			"}," +
+			"\"required\" : {" +
+			"\"name\" : \"dest" + i + "\"," +
+			"\"postcode\" : \"string\"}},";
+		}
+		testStatus += "]}";
+		
 		return testStatus;
 	}
 }
