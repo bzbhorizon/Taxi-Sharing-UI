@@ -1,7 +1,7 @@
 package bzb.gwt.taxishare.server;
 
 import bzb.gwt.taxishare.client.GreetingService;
-import bzb.gwt.taxishare.shared.FieldVerifier;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -10,19 +10,28 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class GreetingServiceImpl extends RemoteServiceServlet implements
 		GreetingService {
-
-	public String greetServer(String input) throws IllegalArgumentException {
-		// Verify that the input is valid. 
-		if (!FieldVerifier.isValidName(input)) {
-			// If the input is not valid, throw an IllegalArgumentException back to
-			// the client.
-			throw new IllegalArgumentException(
-					"Name must be at least 4 characters long");
-		}
-
-		String serverInfo = getServletContext().getServerInfo();
-		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
-		return "Hello, " + input + "!<br><br>I am running " + serverInfo
-				+ ".<br><br>It looks like you are using:<br>" + userAgent;
+	
+	public String greetServer(String input) {
+		String testStatus = new String(
+				"{\"TaxiStatus\" : [{" +
+			"\"key\" : {" +
+			"\"requestID\" : 1" +
+			"}," +
+			"\"required\" : {" +
+			"\"ownerID\" : \"string\"," +
+			"\"destination\" : \"string\"," +
+			"\"requestTime\" : 1," +
+			"\"arrivalTime\" : 1," +
+			"\"status\" : \"string\"" +
+			"}," +
+			"\"optional\" : {" +
+			"\"company\" : \"string\"," +
+			"\"pickupTime\" : 1," +
+			"\"predictedCost\" : 1," +
+			"\"spaceLeft\" : \"number\"" +
+			"}" +
+			"}]}"
+		);
+		return testStatus;
 	}
 }

@@ -36,12 +36,9 @@ html {
 	
 	}
 
-.pageLabel, .pageLabelAttention {
+.pageLabel {
 	font-family: arial;
 	font-size: 20pt;
-	}
-.pageLabelAttention {
-	color: yellow;
 	}
 	
 #infoPanel {
@@ -98,5 +95,9 @@ html {
 	margin-bottom: 20px;
 	border-top-left-radius: 15px;
 	border: 3px solid rgb(0,50,100);
+	-webkit-box-shadow: 5px 5px 3px rgba(0, 0, 0, .4);
+}
+
+.mapPanel {
 	-webkit-box-shadow: 5px 5px 3px rgba(0, 0, 0, .4);
 }
