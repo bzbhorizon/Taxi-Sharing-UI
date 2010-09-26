@@ -47,7 +47,15 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 			"\"name\" : \"dest" + i + "\"," +
 			"\"postcode\" : \"NG162QA\"}},";
 		}
-		testStatus += "]}";
+		testStatus += "], \"Instance\" : {" +
+			"\"key\" : {" +
+			"\"instanceID\" : " + input + 
+			"}," +
+			"\"required\" : {" +
+			"\"destinationID\" : " + 1 + "," +
+			"\"name\" : \"emcc\"," +
+			"\"phone\" : \"07786202578\"," +
+			"\"postcode\" : \"ng72rj\"}}}";
 		
 		return testStatus;
 	}

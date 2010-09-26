@@ -13,6 +13,7 @@ import org.adamtacy.client.ui.effects.impl.NShow;
 import org.adamtacy.client.ui.effects.impl.SlideLeft;
 
 import bzb.gwt.taxishare.shared.Destination;
+import bzb.gwt.taxishare.shared.Instance;
 import bzb.gwt.taxishare.shared.TaxiStatus;
 import bzb.gwt.taxishare.shared.TaxiStatus.TaxiPanel;
 
@@ -21,6 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONException;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Timer;
@@ -35,15 +37,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class TaxiShareUI implements EntryPoint {
 	private static final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
-
-	private static final String INSTANCE_ID = "emcc";
-	
 	private static String response;
+	
+	private static Instance instance;
 	
 	private static int pageNum = 0;
 	
 	private static HashMap<String, Destination> destinations = new HashMap<String, Destination>();
-	private static final Destination hostDestination = new Destination(-1, "host", "ng72rj");
 	
 	private static final int PAGE_TIMEOUT = 10000;
 	private static final int TIMEOUT_INDICATOR = 1000;
@@ -123,7 +123,7 @@ public class TaxiShareUI implements EntryPoint {
 	
 	private static void requestUpdate() {
 		RootPanel.get("progress").add(busyIcon);
-		greetingService.greetServer(INSTANCE_ID,
+		greetingService.greetServer("1", //fix this
 				new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
 						RootPanel.get("progress").clear();
@@ -154,6 +154,7 @@ public class TaxiShareUI implements EntryPoint {
 	
 	static final Label timeLabel = new Label();
 	static final Label pageLabel = new Label();
+	static Label infoLabel = new Label();
 	
 	private static void loadAttsPanel () {
 		RootPanel.get("page").add(pageLabel);
@@ -174,7 +175,7 @@ public class TaxiShareUI implements EntryPoint {
 	}
 	
 	private static void loadInfoPanel () {
-		Label infoLabel = new Label("Instructions");
+		infoLabel.setText("Instructions");
 		infoLabel.setStyleName("infoTitleLabel");
 		ivPanel.add(infoLabel);
 	}
@@ -187,6 +188,10 @@ public class TaxiShareUI implements EntryPoint {
 			if (value != null) {
 				pages.clear();
 				
+				JSONObject hostObj = value.isObject().get("Instance").isObject();
+				instance = Instance.getInstance(hostObj);
+				infoLabel.setText(instance.getPhone());
+								
 				int heightToFill = (int) ((double)Window.getClientHeight() * 0.5);
 				int heightRemaining = heightToFill;
 				int currPage = 0;
@@ -207,7 +212,7 @@ public class TaxiShareUI implements EntryPoint {
 					pages.get(currPage).add(p);
 					heightRemaining -= ph;
 				}
-				mp.addRoutes(hostDestination, taxis);
+				mp.addRoutes(instance.getDestination(), taxis);
 				
 				JSONArray destinationArray = value.isObject().get("Destination").isArray();
 				for (int i = 0; i < destinationArray.size(); i++) {
