@@ -32,13 +32,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * Entry point classes define <code>onModuleLoad()</code>.
- */
 public class TaxiShareUI implements EntryPoint {
-	/*
-	 * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
 	private static final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
@@ -47,6 +41,9 @@ public class TaxiShareUI implements EntryPoint {
 	private static String response;
 	
 	private static int pageNum = 0;
+	
+	private static HashMap<String, Destination> destinations = new HashMap<String, Destination>();
+	private static final Destination hostDestination = new Destination(-1, "host", "ng72rj");
 	
 	private static final int PAGE_TIMEOUT = 10000;
 	private static final int TIMEOUT_INDICATOR = 1000;
@@ -60,7 +57,6 @@ public class TaxiShareUI implements EntryPoint {
 	private static final Image busyIcon = new Image("busy.gif");
 	
 	private static ArrayList<ArrayList<TaxiPanel>> pages = new ArrayList<ArrayList<TaxiPanel>>();
-	private static HashMap<String, Destination> destinations = new HashMap<String, Destination>();
 
 	private static MapPanel mp = new MapPanel();
 	private static VerticalPanel vPanel = new VerticalPanel();
@@ -79,12 +75,12 @@ public class TaxiShareUI implements EntryPoint {
 				if (pages.size() == 0) {
 					vPanel.add(new Label("System is currently experiencing issues"));
 				} else if (pageNum < pages.size()) {
-					//Window.alert("ADding panels");
 					Iterator<TaxiPanel> it = pages.get(pageNum).iterator();
 					while (it.hasNext()) {
 						vPanel.add(it.next());
 					}
 				} else {
+					mp.zoom();
 					vPanel.add(mp);					
 					mf.play();
 				}
@@ -193,16 +189,16 @@ public class TaxiShareUI implements EntryPoint {
 				
 				int heightToFill = (int) ((double)Window.getClientHeight() * 0.5);
 				int heightRemaining = heightToFill;
-				ArrayList<TaxiPanel> thisPage = new ArrayList<TaxiPanel>();
 				int currPage = 0;
+				ArrayList<TaxiStatus> taxis = new ArrayList<TaxiStatus>();
 				JSONArray taxiStatusArray = value.isObject().get("TaxiStatus").isArray();
 				for (int i = 0; i < taxiStatusArray.size(); i++) {
-					//Window.alert(heightRemaining + " px");
 					if (heightRemaining < 0) {
 						heightRemaining = heightToFill;
 						currPage++;
 					}
 					TaxiStatus thisTaxi = TaxiStatus.getTaxiStatus(taxiStatusArray.get(i).isObject());
+					taxis.add(thisTaxi);
 					TaxiPanel p = thisTaxi.getPanel();
 					if (pages.size() <= currPage) {
 						pages.add(currPage, new ArrayList<TaxiPanel>());
@@ -211,6 +207,7 @@ public class TaxiShareUI implements EntryPoint {
 					pages.get(currPage).add(p);
 					heightRemaining -= ph;
 				}
+				mp.addRoutes(hostDestination, taxis);
 				
 				JSONArray destinationArray = value.isObject().get("Destination").isArray();
 				for (int i = 0; i < destinationArray.size(); i++) {
@@ -225,6 +222,12 @@ public class TaxiShareUI implements EntryPoint {
 						sl.play();
 					}
 				}
+				if (hPanel.getOffsetWidth() > (double)Window.getClientWidth() * 0.8) {
+					RootPanel.get("destinationPanel").setStyleName("destinationPanelScroll");
+				} else {
+					RootPanel.get("destinationPanel").removeStyleName("destinationPanelScroll");
+				}
+				
 			} else {
 				Window.alert("No json");
 			}

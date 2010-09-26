@@ -1,5 +1,8 @@
 package bzb.gwt.taxishare.shared;
 
+import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -12,8 +15,9 @@ public class TaxiStatus {
 	private int requestId;
 	
 	// required
-	private String ownerId;
-	private String destination;
+	private int ownerId;
+	private String destinationName;
+	private String destinationPostcode;
 	private long requestTime;
 	private long arrivalTime;
 	private String status;
@@ -22,10 +26,23 @@ public class TaxiStatus {
 	private String company;
 	private long pickupTime;
 	private int predictedCost;
+	private int totalSpace;
 	private int spaceLeft;
 	
 	public static TaxiStatus getTaxiStatus (JSONObject obj) {
 		TaxiStatus ts = new TaxiStatus();
+		ts.setRequestId((int) obj.get("key").isObject().get("requestID").isNumber().doubleValue());
+		ts.setOwnerId((int) obj.get("required").isObject().get("ownerID").isNumber().doubleValue());
+		ts.setDestinationName(obj.get("required").isObject().get("destinationName").isString().stringValue());
+		ts.setDestinationPostcode(obj.get("required").isObject().get("destinationPostcode").isString().stringValue());
+		ts.setRequestTime((long) obj.get("required").isObject().get("requestTime").isNumber().doubleValue());
+		ts.setArrivalTime((long) obj.get("required").isObject().get("arrivalTime").isNumber().doubleValue());
+		ts.setStatus(obj.get("required").isObject().get("status").isString().stringValue());
+		ts.setCompany(obj.get("optional").isObject().get("company").isString().stringValue());
+		ts.setPickupTime((long) obj.get("optional").isObject().get("pickupTime").isNumber().doubleValue());
+		ts.setPredictedCost((int) obj.get("optional").isObject().get("predictedCost").isNumber().doubleValue());
+		ts.setTotalSpace((int) obj.get("optional").isObject().get("totalSpace").isNumber().doubleValue());
+		ts.setSpaceLeft((int) obj.get("optional").isObject().get("spaceLeft").isNumber().doubleValue());
 		return ts;
 	}
 	
@@ -49,26 +66,14 @@ public class TaxiStatus {
 	/**
 	 * @param ownerId the ownerId to set
 	 */
-	public void setOwnerId(String ownerId) {
+	public void setOwnerId(int ownerId) {
 		this.ownerId = ownerId;
 	}
 	/**
 	 * @return the ownerId
 	 */
-	public String getOwnerId() {
+	public int getOwnerId() {
 		return ownerId;
-	}
-	/**
-	 * @param destination the destination to set
-	 */
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
-	/**
-	 * @return the destination
-	 */
-	public String getDestination() {
-		return destination;
 	}
 	/**
 	 * @param requestTime the requestTime to set
@@ -155,38 +160,80 @@ public class TaxiStatus {
 		return spaceLeft;
 	}
 	
+	/**
+	 * @param destinationName the destinationName to set
+	 */
+	public void setDestinationName(String destinationName) {
+		this.destinationName = destinationName;
+	}
+
+	/**
+	 * @return the destinationName
+	 */
+	public String getDestinationName() {
+		return destinationName;
+	}
+
+	/**
+	 * @param destinationPostcode the destinationPostcode to set
+	 */
+	public void setDestinationPostcode(String destinationPostcode) {
+		this.destinationPostcode = destinationPostcode;
+	}
+
+	/**
+	 * @return the destinationPostcode
+	 */
+	public String getDestinationPostcode() {
+		return destinationPostcode;
+	}
+
+	/**
+	 * @param totalSpace the totalSpace to set
+	 */
+	public void setTotalSpace(int totalSpace) {
+		this.totalSpace = totalSpace;
+	}
+
+	/**
+	 * @return the totalSpace
+	 */
+	public int getTotalSpace() {
+		return totalSpace;
+	}
+
 	public class TaxiPanel extends HorizontalPanel {
 		
-		public TaxiPanel () {	
-			setStyleName("taxiPanel");
+		public TaxiPanel () {
 			setWidth((Window.getClientWidth() - 40) + "px");
 			
 			VerticalPanel idPanel = new VerticalPanel();
-			idPanel.setStyleName("taxiBox");
 			idPanel.add(new Label("ID:"));
-			idPanel.add(new Label("1"));
+			idPanel.add(new Label(String.valueOf(getRequestId())));
 			
 			HorizontalPanel spacesPanel = new HorizontalPanel();
-			spacesPanel.setStyleName("taxiBox");
-			spacesPanel.add(new Label("1"));
+			spacesPanel.add(new Label(String.valueOf(getSpaceLeft())));
 			VerticalPanel spacesSmallTextPanel = new VerticalPanel();
-			spacesSmallTextPanel.add(new Label("SPACE"));
+			spacesSmallTextPanel.add(new Label("SPACES"));
 			spacesSmallTextPanel.add(new Label("REMAINING"));
 			spacesPanel.add(spacesSmallTextPanel);
 			
-			Label destination = new Label("blah");
-			destination.setStyleName("taxiBox");
+			Label destination = new Label(getDestinationName());
 			
 			VerticalPanel timePanel = new VerticalPanel();
-			timePanel.setStyleName("taxiBox");
-			timePanel.add(new Label("Departure: blah"));
-			timePanel.add(new Label("ETA: blah"));
+			timePanel.add(new Label("Departure: " + DateTimeFormat.getFormat("h:mm a").format(new Date(getPickupTime()))));
+			timePanel.add(new Label("ETA: " + DateTimeFormat.getFormat("h:mm a").format(new Date(getArrivalTime()))));
 			
 			VerticalPanel farePanel = new VerticalPanel();
-			farePanel.setStyleName("taxiBoxLast");
 			farePanel.add(new Label("FARE APPROX.:"));
 			HorizontalPanel farePriceTextPanel = new HorizontalPanel();
-			farePriceTextPanel.add(new Label("£2.50"));
+			String priceEach = String.valueOf(((double)getPredictedCost() / (double)(getTotalSpace() - getSpaceLeft())));
+			if (priceEach.length() > priceEach.indexOf('.') + 2) {
+				priceEach = priceEach.substring(0, priceEach.indexOf('.') + 3);
+			} else {
+				priceEach += "0";
+			}
+			farePriceTextPanel.add(new Label("\u00A3" + priceEach));
 			farePriceTextPanel.add(new Label("each"));
 			farePanel.add(farePriceTextPanel);
 			
@@ -195,6 +242,26 @@ public class TaxiStatus {
 			add(destination);
 			add(timePanel);
 			add(farePanel);
+			
+			if (getStatus().equals("unconfirmed")) {
+				for (int i = 0; i < getWidgetCount() - 1; i++) {
+					getWidget(i).setStyleName("taxiBoxUnconfirmed");
+				}
+				getWidget(getWidgetCount() - 1).setStyleName("taxiBoxUnconfirmedLast");
+				setStyleName("taxiPanelUnconfirmed");
+			} else if (getSpaceLeft() == 0) {
+				for (int i = 0; i < getWidgetCount() - 1; i++) {
+					getWidget(i).setStyleName("taxiBoxFull");
+				}
+				getWidget(getWidgetCount() - 1).setStyleName("taxiBoxFullLast");
+				setStyleName("taxiPanelFull");
+			} else {
+				for (int i = 0; i < getWidgetCount() - 1; i++) {
+					getWidget(i).setStyleName("taxiBox");
+				}
+				getWidget(getWidgetCount() - 1).setStyleName("taxiBoxLast");
+				setStyleName("taxiPanel");
+			}
 		}
 		
 	}

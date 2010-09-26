@@ -63,19 +63,33 @@ html {
 	margin: 20px;
 }
 
-.taxiBox, .taxiBoxLast, .taxiBoxFull, .taxiBoxLastFull {
+.taxiBox, .taxiBoxLast, .taxiBoxFull, .taxiBoxFullLast, .taxiBoxUnconfirmed, .taxiBoxUnconfirmedLast {
 	margin: 5px;
 	padding: 20px;
-	color: yellow;
 	height: 90%;
 }
-.taxiBox, .taxiBoxFull {
-	border-right: 3px solid rgb(0,50,100);
+.taxiBox, .taxiBoxFull, .taxiBoxUnconfirmed {
 	padding-right: 30px;
-	}
-.taxiBoxFull, .taxiBoxLastFull {
-	color: red;
-	}
+}
+
+.taxiBox, .taxiBoxLast {
+	color: yellow;
+}
+.taxiBox {
+	border-right: 3px solid rgb(18,99,176);
+}
+.taxiBoxFull, .taxiBoxFullLast {
+	color: rgba(100,20,0,0.6);
+}
+.taxiBoxFull {
+	border-right: 3px solid rgba(139,58,58,0.4);
+}
+.taxiBoxUnconfirmed, .taxiBoxUnconfirmedLast {
+	color: rgba(20,20,20,0.3);
+}
+.taxiBoxUnconfirmed {
+	border-right: 3px solid rgba(20,20,20,0.2);
+}
 	
 #activePanel {
 	background-color: transparent;
@@ -83,17 +97,36 @@ html {
 	position: absolute;
 	padding: 20px;
 }
-
+.taxiPanel, .taxiPanelFull, .taxiPanelUnconfirmed {
+	margin-bottom: 20px;
+	border-top-left-radius: 15px;
+}
 .taxiPanel {
 	background: -webkit-gradient(linear,
     left bottom,
     left top,
     color-stop(0.29, rgb(18,99,176)),
     color-stop(0.65, rgb(46,132,212)));
-	margin-bottom: 20px;
-	border-top-left-radius: 15px;
-	border: 3px solid rgb(0,50,100);
+	border: 3px solid rgb(18,99,176);
 	-webkit-box-shadow: 5px 5px 3px rgba(0, 0, 0, .4);
+}
+.taxiPanelFull {
+	background: -webkit-gradient(linear,
+    left bottom,
+    left top,
+    color-stop(0.29, rgba(139,58,58,0.4)),
+    color-stop(0.65, rgba(205,85,85,0.4)));
+	border: 3px solid rgba(139,58,58, 0.4);
+	-webkit-box-shadow: 5px 5px 3px rgba(0, 0, 0, .2);
+}
+.taxiPanelUnconfirmed {
+	background: -webkit-gradient(linear,
+    left bottom,
+    left top,
+    color-stop(0.29, rgba(58,58,58,0.2)),
+    color-stop(0.65, rgba(85,85,85,0.2)));
+	border: 3px solid rgba(20,20,20, 0.2);
+	-webkit-box-shadow: 5px 5px 3px rgba(0, 0, 0, .2);
 }
 
 .mapPanel {
@@ -103,16 +136,19 @@ html {
 #destinationPanel {
 	background: white;
 	width: 100%;
-	padding: 10px 0px 10px 0px;
+	padding: 10px 0px 10px 200px;
 	margin-bottom: 10px;
 	border-bottom: 2px solid rgb(100,100,100);
 	color: rgb(100,100,100);
-	overflow-x: -webkit-marquee;
+	}
+
+.destinationPanelScroll {
+		overflow-x: -webkit-marquee;
   -webkit-marquee-direction: backwards;
   -webkit-marquee-style: scroll;
   -webkit-marquee-speed: fast;
   -webkit-marquee-increment: small;
-	}
+}
 
 .destinationTitleLabel, .destinationLabel {
 	padding: 0px 10px 0px 10px;
@@ -131,6 +167,10 @@ html {
 	padding: 10px;
 	position: relative;
 	z-index: 0;
+	font-size: 12pt;
+	text-transform: uppercase;
+	font-weight: bold;
+	letter-spacing: -1pt;
 }
 
 .infoTitleLabel {

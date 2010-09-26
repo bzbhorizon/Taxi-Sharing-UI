@@ -1,7 +1,6 @@
 package bzb.gwt.taxishare.shared;
 
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 
 public class Destination {
 
@@ -10,11 +9,16 @@ public class Destination {
 	private String postcode;
 	
 	public static Destination getDestination (JSONObject obj) {
-		Destination d = new Destination();
-		JSONString objS = obj.get("required").isObject().get("name").isString();
-		String name = objS.stringValue();
-		d.setName(name);
-		return d;
+		int destinationId = (int) obj.get("key").isObject().get("destinationID").isNumber().doubleValue();
+		String name = obj.get("required").isObject().get("name").isString().stringValue();
+		String postcode = obj.get("required").isObject().get("postcode").isString().stringValue();
+		return new Destination(destinationId, name, postcode);
+	}
+	
+	public Destination (int destinationId, String name, String postcode) {
+		this.destinationId = destinationId;
+		this.name = name;
+		this.postcode = postcode;
 	}
 	
 	/**
