@@ -28,6 +28,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -45,7 +46,7 @@ public class TaxiShareUI implements EntryPoint {
 	
 	private static HashMap<String, Destination> destinations = new HashMap<String, Destination>();
 	
-	private static final int PAGE_TIMEOUT = 10000;
+	private static final int PAGE_TIMEOUT = 20000;
 	private static final int TIMEOUT_INDICATOR = 1000;
 	private static final int CLOCK_UPDATE = 1000;
 	
@@ -61,7 +62,7 @@ public class TaxiShareUI implements EntryPoint {
 	private static MapPanel mp = new MapPanel();
 	private static VerticalPanel vPanel = new VerticalPanel();
 	private static HorizontalPanel hPanel = new HorizontalPanel();
-	private static VerticalPanel ivPanel = new VerticalPanel();
+	private static DockPanel ivPanel = new DockPanel();
 	
 	public TaxiShareUI () {
 		mf = new Highlight(vPanel.getElement());
@@ -175,12 +176,42 @@ public class TaxiShareUI implements EntryPoint {
 	}
 	
 	private static void loadInfoPanel () {
-		infoLabel.setText("Instructions");
+		ivPanel.clear();
+		ivPanel.setHorizontalAlignment(DockPanel.ALIGN_LEFT);
+		ivPanel.setVerticalAlignment(DockPanel.ALIGN_TOP);
+		ivPanel.setSpacing(20);
+		
+		VerticalPanel v = new VerticalPanel();
+		String instructions;
+		if (instance != null) {
+			infoLabel.setText(instance.getPhone());
+			instructions = "To book a taxi, send a text message to " + instance.getPhone() + " containing a one-word name (to identify yourself to the taxi-driver) followed by your destination. ";
+		} else {
+			infoLabel.setText("Instructions");
+			instructions = "Waiting";
+		}
 		infoLabel.setStyleName("infoTitleLabel");
-		ivPanel.add(infoLabel);
+		v.add(infoLabel);
+		Label exampleLabel = new Label("e.g. \"ben trainstation\"");
+		exampleLabel.addStyleName("exampleLabel");
+		v.add(exampleLabel);
+		v.addStyleName("examplePanel");
+		ivPanel.add(v, DockPanel.WEST);
+		
+		String sampleDestination;
+		if (destinations.size() > 0) {
+			sampleDestination = "You can type one of the destinations listed above (e.g. " + destinations.keySet().toArray()[0] + "), or specify one of your own choosing (e.g. a postcode or a place name)";
+		} else {
+			sampleDestination = "You can specify a destination using a postcode (e.g. ng51bb) or a placename (e.g. Victoria Centre)";
+		}
+		Label instructionLabel = new Label(instructions + sampleDestination);
+		instructionLabel.addStyleName("instructionLabel");
+		ivPanel.add(instructionLabel, DockPanel.CENTER);
+		
+		ivPanel.add(new Image("horizonIcon.png"), DockPanel.EAST);
 	}
 	
-	private static final int ph = 125;
+	private static final int ph = 120;
 	
 	private static void parseResponse (String response) {
 		try {
@@ -190,9 +221,9 @@ public class TaxiShareUI implements EntryPoint {
 				
 				JSONObject hostObj = value.isObject().get("Instance").isObject();
 				instance = Instance.getInstance(hostObj);
-				infoLabel.setText(instance.getPhone());
+				loadInfoPanel();
 								
-				int heightToFill = (int) ((double)Window.getClientHeight() * 0.5);
+				int heightToFill = (int) ((double)Window.getClientHeight() * 0.4);
 				int heightRemaining = heightToFill;
 				int currPage = 0;
 				ArrayList<TaxiStatus> taxis = new ArrayList<TaxiStatus>();

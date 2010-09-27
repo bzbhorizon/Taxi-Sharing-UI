@@ -5,7 +5,10 @@ import java.util.Date;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -207,41 +210,79 @@ public class TaxiStatus {
 		public TaxiPanel () {
 			setWidth((Window.getClientWidth() - 40) + "px");
 			
-			VerticalPanel idPanel = new VerticalPanel();
-			idPanel.add(new Label("ID:"));
-			idPanel.add(new Label(String.valueOf(getRequestId())));
+			DockPanel idPanel = new DockPanel();
+			Label idLabel = new Label("TAXI" + String.valueOf(getRequestId() + 1));
+			idLabel.addStyleName("idLabel");
+			idPanel.setHorizontalAlignment(DockPanel.ALIGN_CENTER);
+			idPanel.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+			idPanel.add(idLabel, DockPanel.CENTER);
 			
-			HorizontalPanel spacesPanel = new HorizontalPanel();
-			spacesPanel.add(new Label(String.valueOf(getSpaceLeft())));
-			VerticalPanel spacesSmallTextPanel = new VerticalPanel();
-			spacesSmallTextPanel.add(new Label("SPACES"));
-			spacesSmallTextPanel.add(new Label("REMAINING"));
-			spacesPanel.add(spacesSmallTextPanel);
+			VerticalPanel spacesPanel = new VerticalPanel();
+			spacesPanel.add(new Label(String.valueOf(getSpaceLeft()) + " seat(s) available"));
+			FlowPanel spacesIcons = new FlowPanel();
+			for (int i = 0; i < getTotalSpace() - getSpaceLeft(); i++) {
+				spacesIcons.add(new Image("freespace.png"));
+			}
+			for (int i = 0; i < getSpaceLeft(); i++) {
+				Image fadedIcon = new Image("freespace.png");
+				fadedIcon.addStyleName("fadedIcon");
+				spacesIcons.add(fadedIcon);
+			}
+			spacesPanel.add(spacesIcons);
 			
-			Label destination = new Label(getDestinationName());
+			DockPanel destinationPanel = new DockPanel();
+			Label destinationLabel = new Label(getDestinationName());
+			destinationLabel.addStyleName("destinationNameLabel");
+			destinationPanel.setHorizontalAlignment(DockPanel.ALIGN_CENTER);
+			destinationPanel.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+			destinationPanel.add(destinationLabel, DockPanel.CENTER);
 			
 			VerticalPanel timePanel = new VerticalPanel();
-			timePanel.add(new Label("Departure: " + DateTimeFormat.getFormat("h:mm a").format(new Date(getPickupTime()))));
-			timePanel.add(new Label("ETA: " + DateTimeFormat.getFormat("h:mm a").format(new Date(getArrivalTime()))));
+			timePanel.add(new Label("Pickup:"));
+			Label departureTimeLabel = new Label(DateTimeFormat.getFormat("h:mm a").format(new Date(getPickupTime())));
+			departureTimeLabel.addStyleName("departureTimeLabel");
+			timePanel.add(departureTimeLabel);
+			timePanel.add(new Label("Journey:"));
+			Label arrivalTimeLabel = new Label((int)Math.round(((double)(getArrivalTime() - getPickupTime()) / 1000.0 / 60.0)) + " mins");
+			arrivalTimeLabel.addStyleName("arrivalTimeLabel");
+			timePanel.add(arrivalTimeLabel);
 			
 			VerticalPanel farePanel = new VerticalPanel();
-			farePanel.add(new Label("FARE APPROX.:"));
-			HorizontalPanel farePriceTextPanel = new HorizontalPanel();
+			farePanel.add(new Label("Current fare:"));
 			String priceEach = String.valueOf(((double)getPredictedCost() / (double)(getTotalSpace() - getSpaceLeft())));
-			if (priceEach.length() > priceEach.indexOf('.') + 2) {
-				priceEach = priceEach.substring(0, priceEach.indexOf('.') + 3);
-			} else {
-				priceEach += "0";
+			if (priceEach.indexOf('.') > -1) {
+				if (priceEach.length() < priceEach.indexOf('.') + 3) {
+					priceEach += "0";
+				} else {
+					priceEach = priceEach.substring(0, priceEach.indexOf('.') + 3);
+				}
 			}
-			farePriceTextPanel.add(new Label("\u00A3" + priceEach));
-			farePriceTextPanel.add(new Label("each"));
-			farePanel.add(farePriceTextPanel);
+			Label priceLabel = new Label("\u00A3" + priceEach);
+			priceLabel.addStyleName("fareLabel");
+			farePanel.add(priceLabel);
+			farePanel.add(new Label("each; \u00A3" + getPredictedCost() + " total (est.)"));
+			
+			VerticalPanel savingPanel = new VerticalPanel();
+			savingPanel.add(new Label("Fare when full:"));
+			String savingEach = String.valueOf((double)getPredictedCost() / (double)getTotalSpace());
+			if (savingEach.indexOf('.') > -1) {
+				if (savingEach.length() < savingEach.indexOf('.') + 3) {
+					savingEach += "0";
+				} else {
+					savingEach = savingEach.substring(0, savingEach.indexOf('.') + 3);
+				}
+			}
+			Label savingLabel = new Label("\u00A3" + savingEach);
+			savingLabel.addStyleName("fareLabel");
+			savingPanel.add(savingLabel);
+			savingPanel.add(new Label("each (estimated)"));
 			
 			add(idPanel);
 			add(spacesPanel);
-			add(destination);
+			add(destinationPanel);
 			add(timePanel);
 			add(farePanel);
+			add(savingPanel);
 			
 			if (getStatus().equals("unconfirmed")) {
 				for (int i = 0; i < getWidgetCount() - 1; i++) {
@@ -259,7 +300,7 @@ public class TaxiStatus {
 				for (int i = 0; i < getWidgetCount() - 1; i++) {
 					getWidget(i).setStyleName("taxiBox");
 				}
-				getWidget(getWidgetCount() - 1).setStyleName("taxiBoxLast");
+				getWidget(getWidgetCount() - 1).setStyleName("taxiBoxGreenLast");
 				setStyleName("taxiPanel");
 			}
 		}

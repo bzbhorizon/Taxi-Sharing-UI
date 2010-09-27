@@ -13,9 +13,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 	
 	public String greetServer(String input) {
 		// order taxistatus by arrival time
+		// only pass on taxistatus unconfirmed | confirmed, not left
 		
 		String testStatus = new String("{\"TaxiStatus\" : [");
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 7; i++) {
 			testStatus += "{" +
 			"\"key\" : {" +
 			"\"requestID\" : " + i +
@@ -25,15 +26,15 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 			"\"destinationName\" : \"Ben's house\"," +
 			"\"destinationPostcode\" : \"ng162qa\"," +
 			"\"requestTime\" : 1," +
-			"\"arrivalTime\" : 1," +
-			"\"status\" : \"unconfirmed\"" +
+			"\"arrivalTime\" : 1000000," +
+			"\"status\" : \"confirmed\"" +
 			"}," +
 			"\"optional\" : {" +
 			"\"company\" : \"dg\"," +
 			"\"pickupTime\" : 1," +
-			"\"predictedCost\" : 10," +
-			"\"totalSpace\" : 6," +
-			"\"spaceLeft\" : 0" +
+			"\"predictedCost\" : 15," +
+			"\"totalSpace\" : 4," +
+			"\"spaceLeft\" : 3" +
 			"}" +
 			"},";
 		}

@@ -10,14 +10,14 @@ html {
 #titlePanel {
 	color: white;
 	font-family: arial black;
-	height: 130px;
+	height: 110px;
 	position: relative;
 	}
 
 #title {
 	text-transform: lowercase;
 	letter-spacing: -6pt;
-	font-size: 70pt;
+	font-size: 60pt;
 	position: absolute;
 	bottom: 0;
 	left: 10px;
@@ -32,10 +32,6 @@ html {
 	letter-spacing: -2pt;
 	}
 	
-.timeLabel {
-	
-	}
-
 .pageLabel {
 	font-family: arial;
 	font-size: 20pt;
@@ -50,28 +46,23 @@ html {
 	-webkit-box-shadow: 0 -15px 15px rgba(0, 0, 0, .4);
 	}
 
-#infoIcon {
-	float: left;
-	margin-left: 10px;
-	}
 #info {
-	float: left;
-	margin-left: 10px;
+	margin: 10px;
 	}
-#horizonIcon {
-	float: right;
-	margin: 20px;
-}
 
-.taxiBox, .taxiBoxLast, .taxiBoxFull, .taxiBoxFullLast, .taxiBoxUnconfirmed, .taxiBoxUnconfirmedLast {
+.taxiBox, .taxiBoxLast, .taxiBoxFull, .taxiBoxFullLast, .taxiBoxUnconfirmed, .taxiBoxUnconfirmedLast, .taxiBoxGreenLast {
 	margin: 5px;
-	padding: 20px;
+	padding: 5px;
 	height: 90%;
+	text-align: center;
 }
 .taxiBox, .taxiBoxFull, .taxiBoxUnconfirmed {
-	padding-right: 30px;
+	padding-right: 20px;
 }
 
+.taxiBoxGreenLast {
+	color: white;
+	}
 .taxiBox, .taxiBoxLast {
 	color: yellow;
 }
@@ -98,7 +89,7 @@ html {
 	padding: 20px;
 }
 .taxiPanel, .taxiPanelFull, .taxiPanelUnconfirmed {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 	border-top-left-radius: 15px;
 }
 .taxiPanel {
@@ -167,7 +158,7 @@ html {
 	padding: 10px;
 	position: relative;
 	z-index: 0;
-	font-size: 12pt;
+	font-size: 10pt;
 	text-transform: uppercase;
 	font-weight: bold;
 	letter-spacing: -1pt;
@@ -175,7 +166,28 @@ html {
 
 .infoTitleLabel {
 	text-transform: lowercase;
-	letter-spacing: -4pt;
+	letter-spacing: -3pt;
 	font-size: 40pt;
 	font-family: arial black;
+	line-height: 75%;
+}
+.exampleLabel {
+	text-transform: lowercase;
+	letter-spacing: -2pt;
+	font-size: 20pt;
+	font-family: arial black;
+	}
+
+.spaceLeftLabel, .idLabel, .destinationNameLabel, .fareLabel {
+	font-family: arial black;
+	letter-spacing: -3pt;
+	font-size: 30pt;
+	}
+.departureTimeLabel, .arrivalTimeLabel {
+	font-family: arial black;
+	letter-spacing: -1pt;
+	font-size: 10pt;
+	}
+.fadedIcon {
+	opacity:0.4;
 }
