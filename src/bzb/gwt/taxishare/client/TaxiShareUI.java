@@ -170,7 +170,7 @@ public class TaxiShareUI implements EntryPoint {
 	}
 		
 	private static void loadDestinationPanel () {
-		Label destinationTitle = new Label("Destinations");
+		Label destinationTitle = new Label("Common destinations");
 		destinationTitle.setStyleName("destinationTitleLabel");
 		hPanel.add(destinationTitle);
 	}
@@ -258,7 +258,7 @@ public class TaxiShareUI implements EntryPoint {
 						sl.play();
 					}
 				}
-				if (hPanel.getOffsetWidth() > (double)Window.getClientWidth() * 0.8) {
+				if (hPanel.getOffsetWidth() > (double)Window.getClientWidth() * 0.6) {
 					RootPanel.get("destinationPanel").setStyleName("destinationPanelScroll");
 				} else {
 					RootPanel.get("destinationPanel").removeStyleName("destinationPanelScroll");

@@ -27,7 +27,7 @@ public class MapPanel extends VerticalPanel {
 		setWidth((Window.getClientWidth() - 40) + "px");
 		setStyleName("mapPanel");
 		
-		Maps.loadMapsApi("", "2", false, new Runnable() {
+		Maps.loadMapsApi("ABQIAAAAhuw3_xPyyS01u9B62XUBMxSlNSnRi6rmoiaafuWcJxiCAAlTnRSrvdk4WuMn96c4QvLabvNEtXGNMg", "2", false, new Runnable() {
 			public void run() {
 				currentLocation = LatLng.newInstance(52.939138, -1.203244);
 		    	map = new MapWidget(currentLocation, DEFAULT_ZOOM_LEVEL);

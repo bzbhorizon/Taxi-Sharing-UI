@@ -127,7 +127,7 @@ html {
 #destinationPanel {
 	background: white;
 	width: 100%;
-	padding: 10px 0px 10px 200px;
+	padding: 10px 0px 10px 300px;
 	margin-bottom: 10px;
 	border-bottom: 2px solid rgb(100,100,100);
 	color: rgb(100,100,100);
@@ -190,4 +190,7 @@ html {
 	}
 .fadedIcon {
 	opacity:0.4;
+}
+.veryFadedIcon {
+	opacity:0.1;
 }

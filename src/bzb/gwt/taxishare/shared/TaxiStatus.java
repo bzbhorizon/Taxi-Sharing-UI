@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TaxiStatus {
@@ -217,18 +218,38 @@ public class TaxiStatus {
 			idPanel.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
 			idPanel.add(idLabel, DockPanel.CENTER);
 			
-			VerticalPanel spacesPanel = new VerticalPanel();
-			spacesPanel.add(new Label(String.valueOf(getSpaceLeft()) + " seat(s) available"));
-			FlowPanel spacesIcons = new FlowPanel();
-			for (int i = 0; i < getTotalSpace() - getSpaceLeft(); i++) {
-				spacesIcons.add(new Image("freespace.png"));
+			Panel spacesPanel;
+			if (getSpaceLeft() == 0) {
+				spacesPanel = new DockPanel();
+				((DockPanel) spacesPanel).setHorizontalAlignment(DockPanel.ALIGN_CENTER);
+				((DockPanel) spacesPanel).setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+				Label fullLabel = new Label("FULL");
+				fullLabel.addStyleName("idLabel");
+				((DockPanel) spacesPanel).add(fullLabel, DockPanel.CENTER);
+			} else {
+				spacesPanel = new VerticalPanel();
+				spacesPanel.add(new Label(String.valueOf(getSpaceLeft()) + " seat(s) available"));
+				FlowPanel spacesIcons = new FlowPanel();
+				for (int i = 0; i < getTotalSpace() - getSpaceLeft(); i++) {
+					if (getStatus().equals("unconfirmed")) {
+						Image fadedIcon = new Image("freespace.png");
+						fadedIcon.addStyleName("fadedIcon");
+						spacesIcons.add(fadedIcon);
+					} else {
+						spacesIcons.add(new Image("freespace.png"));
+					}
+				}
+				for (int i = 0; i < getSpaceLeft(); i++) {
+					Image fadedIcon = new Image("freespace.png");
+					if (getStatus().equals("unconfirmed")) {
+						fadedIcon.addStyleName("veryFadedIcon");
+					} else {
+						fadedIcon.addStyleName("fadedIcon");
+					}
+					spacesIcons.add(fadedIcon);
+				}
+				spacesPanel.add(spacesIcons);
 			}
-			for (int i = 0; i < getSpaceLeft(); i++) {
-				Image fadedIcon = new Image("freespace.png");
-				fadedIcon.addStyleName("fadedIcon");
-				spacesIcons.add(fadedIcon);
-			}
-			spacesPanel.add(spacesIcons);
 			
 			DockPanel destinationPanel = new DockPanel();
 			Label destinationLabel = new Label(getDestinationName());
@@ -239,12 +260,22 @@ public class TaxiStatus {
 			
 			VerticalPanel timePanel = new VerticalPanel();
 			timePanel.add(new Label("Pickup:"));
-			Label departureTimeLabel = new Label(DateTimeFormat.getFormat("h:mm a").format(new Date(getPickupTime())));
-			departureTimeLabel.addStyleName("departureTimeLabel");
+			Label departureTimeLabel;
+			if (getStatus().equals("unconfirmed")) {
+				departureTimeLabel = new Label("unconfirmed");
+			} else {
+				departureTimeLabel = new Label(DateTimeFormat.getFormat("h:mm a").format(new Date(getPickupTime())));
+				departureTimeLabel.addStyleName("departureTimeLabel");
+			}
 			timePanel.add(departureTimeLabel);
 			timePanel.add(new Label("Journey:"));
-			Label arrivalTimeLabel = new Label((int)Math.round(((double)(getArrivalTime() - getPickupTime()) / 1000.0 / 60.0)) + " mins");
-			arrivalTimeLabel.addStyleName("arrivalTimeLabel");
+			Label arrivalTimeLabel;
+			if (getStatus().equals("unconfirmed")) {
+				arrivalTimeLabel = new Label("unconfirmed");
+			} else {
+				arrivalTimeLabel = new Label((int)Math.round(((double)(getArrivalTime() - getPickupTime()) / 60.0)) + " mins");
+				arrivalTimeLabel.addStyleName("arrivalTimeLabel");
+			}		
 			timePanel.add(arrivalTimeLabel);
 			
 			VerticalPanel farePanel = new VerticalPanel();
